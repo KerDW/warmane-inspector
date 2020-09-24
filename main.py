@@ -33,29 +33,9 @@ async def screenshotSpecs(name):
         await browser.close()
         return 0
 
-def newWindow(window):
-    while True:
-        event, values = window.read()
-        if event == "OK" or event == sg.WIN_CLOSED:
-            break
-    window.close()
-
-# asyncio.get_event_loop().run_until_complete(screenshotSpecs())
-
 base_layout = [  
-            [sg.Text('Character name:'), sg.InputText(), sg.Button('Inspect')]
-         ]
-
-print(os. getcwd())
-
-popup_success = [
-    [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+    [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect')]
 ]
-
-popup_fail = [
-    [sg.Text("Couldn't find the character")],
-    [sg.Button('OK')]
-]  
 
 window = sg.Window('Warmane inspector', base_layout)
 
@@ -64,10 +44,34 @@ while True:
     if event == sg.WIN_CLOSED:
         break
     if asyncio.get_event_loop().run_until_complete(screenshotSpecs(values[0])) == True:
-        window2 = sg.Window('Character info', popup_success)
-        newWindow(window2)
-    else:
-        window3 = sg.Window('Character info', popup_fail)
-        newWindow(window3)
 
+        popup_success = [
+            [sg.Text("Character Name: "+values[0])],
+            [sg.Text("Talents:")],
+            [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+        ]
+
+        window2 = sg.Window('Character info', popup_success)
+        while True:
+            event2, values2 = window2.read()
+            if event2 == sg.WIN_CLOSED:
+                break
+
+        window2.close()
+
+    else:
+
+        popup_fail = [
+            [sg.Text("Couldn't find the character")],
+            [sg.Button('OK')]
+        ] 
+
+        window3 = sg.Window('Character info', popup_fail)
+        while True:
+            event3, values3 = window3.read()
+            if event3 == "OK" or event == sg.WIN_CLOSED:
+                break
+
+        window3.close()
+        
 window.close()

@@ -2,13 +2,18 @@ import PySimpleGUI as sg
 import asyncio
 from pyppeteer import launch
 import os
+import requests
+from bs4 import BeautifulSoup
 
 async def screenshotSpecs(name):
     browser = await launch()
     page = await browser.newPage()
 
+    # talent screenshots
     try:
-        await page.goto('https://armory.warmane.com/character/'+name+'/Lordaeron/talents')
+        base_url = 'https://armory.warmane.com/character/'+name+'/Lordaeron/'
+
+        await page.goto(base_url+'talents')
         # focus page to avoid tooltips
         await page.bringToFront()
 
@@ -45,38 +50,59 @@ while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:
         break
-    if asyncio.get_event_loop().run_until_complete(screenshotSpecs(values[0])) == True:
+    if event == "Inspect":
 
-        main_tab_layout = [[sg.Text("Character Name: "+values[0])]]
+        character_name = values[0].capitalize()
 
-        talents_tab_layout = [[sg.Text("Talents:")],
-            [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
+        if asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name)) == True:
 
-        layout_success = [
-            [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
-        ]
+            base_url = 'https://armory.warmane.com/character/'+character_name+'/Lordaeron/'
 
-        window2 = sg.Window('Character info', layout_success)
-        while True:
-            event2, values2 = window2.read()
-            if event2 == sg.WIN_CLOSED:
-                break
+            html_page = requests.get(base_url+"profile")
+            soup = BeautifulSoup(html_page.content, 'html.parser')
 
-        window2.close()
+            spec = soup.find_all('div', {'class': 'specialization'})
+            spec_text = ""
 
-    else:
+            for tag in spec:
+                tags = tag.find_all("div", {"class": "text"})
+                for tag in tags:
+                    spec_text = spec_text + tag.text
 
-        layout_fail = [
-            [sg.Text("Couldn't find the character")],
-            [sg.Button('OK', bind_return_key=True)]
-        ] 
+            guild_name = soup.find('span', {'class': 'guild-name'}).text
 
-        window3 = sg.Window('Character info', layout_fail)
-        while True:
-            event3, values3 = window3.read()
-            if event3 == "OK" or event == sg.WIN_CLOSED:
-                break
+            main_tab_layout = [[sg.Text("Character: "+character_name)],
+                                [sg.Text("Guild: "+guild_name)],
+                                [sg.Text("Specs: "+spec_text)]]
 
-        window3.close()
+            talents_tab_layout = [[sg.Text("Talents:")],
+                [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
+
+            layout_success = [
+                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
+            ]
+
+            window2 = sg.Window('Character info', layout_success)
+            while True:
+                event2, values2 = window2.read()
+                if event2 == sg.WIN_CLOSED:
+                    break
+
+            window2.close()
+
+        else:
+
+            layout_fail = [
+                [sg.Text("Couldn't find the character")],
+                [sg.Button('OK', bind_return_key=True)]
+            ] 
+
+            window3 = sg.Window('Character info', layout_fail)
+            while True:
+                event3, values3 = window3.read()
+                if event3 == "OK" or event == sg.WIN_CLOSED:
+                    break
+
+            window3.close()
         
 window.close()

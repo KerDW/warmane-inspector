@@ -47,13 +47,16 @@ while True:
         break
     if asyncio.get_event_loop().run_until_complete(screenshotSpecs(values[0])) == True:
 
-        popup_success = [
-            [sg.Text("Character Name: "+values[0])],
-            [sg.Text("Talents:")],
-            [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+        main_tab_layout = [[sg.Text("Character Name: "+values[0])]]
+
+        talents_tab_layout = [[sg.Text("Talents:")],
+            [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
+
+        layout_success = [
+            [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
         ]
 
-        window2 = sg.Window('Character info', popup_success)
+        window2 = sg.Window('Character info', layout_success)
         while True:
             event2, values2 = window2.read()
             if event2 == sg.WIN_CLOSED:
@@ -63,12 +66,12 @@ while True:
 
     else:
 
-        popup_fail = [
+        layout_fail = [
             [sg.Text("Couldn't find the character")],
             [sg.Button('OK', bind_return_key=True)]
         ] 
 
-        window3 = sg.Window('Character info', popup_fail)
+        window3 = sg.Window('Character info', layout_fail)
         while True:
             event3, values3 = window3.read()
             if event3 == "OK" or event == sg.WIN_CLOSED:

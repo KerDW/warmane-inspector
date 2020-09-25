@@ -4,20 +4,18 @@ from pyppeteer import launch
 import os
 
 async def screenshotSpecs(name):
-    browser = await launch()
+    browser = await launch(headless=True)
     page = await browser.newPage()
 
     try:
         await page.goto('https://armory.warmane.com/character/'+name+'/Lordaeron/talents')
-        # focus page to avoid tooltips
-        await page.bringToFront()
 
         # change spec through js click (if currently in OS it'll error)
         await page.click('#character-sheet > table > tbody > tr > td:nth-child(1) > a')
 
         # get mainspec and save screenshot
         await page.waitForSelector('#spec-0')
-        element = await page.querySelector('#spec-0')  
+        element = await page.querySelector('#spec-0')
         await element.screenshot({'path': 'talents0.png'})
 
         # change spec through js click
@@ -33,45 +31,66 @@ async def screenshotSpecs(name):
         await browser.close()
         return 0
 
-base_layout = [  
-    [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect')]
-]
+def base_window():
+    base_layout = [  
+        [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect')],
+        [sg.Button('Submit', visible=False, bind_return_key=True)]
+    ]
 
-window = sg.Window('Warmane inspector', base_layout)
+    window = sg.Window('Warmane inspector', base_layout)
+
+    return window
+
+def window_success():
+    layout_success = [
+        [sg.Text("Character Name: "+values[0])],
+        [sg.Text("Talents:")],
+        [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+    ]
+
+    window = sg.Window('Character info', layout_success)
+
+    return window
+
+def window_fail():
+    popup_fail = [
+        [sg.Text("Couldn't find the character")],
+        [sg.Button('OK')],
+        [sg.Button('Submit', visible=False, bind_return_key=True)]
+    ] 
+
+    window = sg.Window('Character info', popup_fail)
+
+    return window
+
+window = base_window()
 
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:
         break
-    if asyncio.get_event_loop().run_until_complete(screenshotSpecs(values[0])) == True:
+    if event == 'Inspect' or event == 'Submit':
 
-        popup_success = [
-            [sg.Text("Character Name: "+values[0])],
-            [sg.Text("Talents:")],
-            [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
-        ]
+        if asyncio.get_event_loop().run_until_complete(screenshotSpecs(values[0])) == True:
 
-        window2 = sg.Window('Character info', popup_success)
-        while True:
-            event2, values2 = window2.read()
-            if event2 == sg.WIN_CLOSED:
-                break
+            window_success = window_success()
 
-        window2.close()
+            while True:
+                event2, values2 = window_success.read()
+                if event2 == sg.WIN_CLOSED:
+                    break
 
-    else:
+            window_success.close()
 
-        popup_fail = [
-            [sg.Text("Couldn't find the character")],
-            [sg.Button('OK')]
-        ] 
+        else:
 
-        window3 = sg.Window('Character info', popup_fail)
-        while True:
-            event3, values3 = window3.read()
-            if event3 == "OK" or event == sg.WIN_CLOSED:
-                break
+            window_fail = window_fail()
 
-        window3.close()
+            while True:
+                event3, values3 = window_fail.read()
+                if event3 == "OK" or event3 == "Submit" or event == sg.WIN_CLOSED:
+                    break
+
+            window_fail.close()
         
 window.close()

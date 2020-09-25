@@ -14,6 +14,7 @@ async def screenshotSpecs(name):
 
         # change spec through js click (if currently in OS it'll error)
         await page.click('#character-sheet > table > tbody > tr > td:nth-child(1) > a')
+        await page.mouse.move(0, 0)
 
         # get mainspec and save screenshot
         await page.waitForSelector('#spec-0')
@@ -22,6 +23,7 @@ async def screenshotSpecs(name):
 
         # change spec through js click
         await page.click('#character-sheet > table > tbody > tr > td:nth-child(3) > a')
+        await page.mouse.move(0, 0)
 
         # screenshot offspec
         await page.waitForSelector('#spec-1')

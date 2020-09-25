@@ -61,6 +61,8 @@ while True:
             html_page = requests.get(base_url+"profile")
             soup = BeautifulSoup(html_page.content, 'html.parser')
 
+            guild_name = soup.find('span', {'class': 'guild-name'}).text
+
             spec = soup.find_all('div', {'class': 'specialization'})
             spec_text = ""
 
@@ -69,17 +71,39 @@ while True:
                 for tag in tags:
                     spec_text = spec_text + tag.text
 
-            guild_name = soup.find('span', {'class': 'guild-name'}).text
+            prof = soup.find_all('div', {'class': 'profskills'})
+            prof_text = ""
+
+            for tag in prof:
+                tags = tag.find_all("div", {"class": "text"})
+                for tag in tags:
+                    prof_text = prof_text + tag.text
+
+            stats = soup.find_all('div', {'class': ['stub', 'stub first']})
+            stats_text = ""
+
+            for tag in stats:
+                tags = tag.find_all("div", {"class": "text"})
+                for tag in tags:
+                    spans = tag.find_all("span", {'class': "value"})
+                    for span in spans:
+                        stats_text = stats_text + span.text
 
             main_tab_layout = [[sg.Text("Character: "+character_name)],
                                 [sg.Text("Guild: "+guild_name)],
-                                [sg.Text("Specs: "+spec_text)]]
+                                [sg.Text("Specs: "+spec_text)],
+                                [sg.Text("Profs: "+prof_text)]
+                                ]
+
+            stats_tab_layout = [[sg.Text("Stats:")],
+                [sg.Text(stats_text)]]
 
             talents_tab_layout = [[sg.Text("Talents:")],
                 [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
 
+
             layout_success = [
-                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
+                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
             ]
 
             window2 = sg.Window('Character info', layout_success)

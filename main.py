@@ -34,7 +34,7 @@ async def screenshotSpecs(name):
         return 0
 
 base_layout = [  
-    [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect')]
+    [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect', bind_return_key=True)]
 ]
 
 window = sg.Window('Warmane inspector', base_layout)
@@ -63,7 +63,7 @@ while True:
 
         popup_fail = [
             [sg.Text("Couldn't find the character")],
-            [sg.Button('OK')]
+            [sg.Button('OK', bind_return_key=True)]
         ] 
 
         window3 = sg.Window('Character info', popup_fail)

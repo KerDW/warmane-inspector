@@ -99,13 +99,20 @@ while True:
                         stats_text_third_part = stats_text_third_part + tag.text
                     i += 1
 
+            first_stats_array = stats_text_first_part.split()
+            second_stats_array = stats_text_second_part.split()
+            third_stats_array = stats_text_third_part.split()
+            core_stats_text = "Melee/Ranged Hit Rating: "+first_stats_array[11]+"\nExpertise: "+first_stats_array[26]
+            core_stats_text = core_stats_text + "\nSpell Hit Rating: "+third_stats_array[9]
+            core_stats_text = core_stats_text + "\nArmor: "+second_stats_array[16]
+
             main_tab_layout = [[sg.Text("Character: "+character_name)],
                                 [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
                                 [sg.Text("Specs: "+spec_text)],
                                 [sg.Text("Profs: "+prof_text)],
-                                # [sg.Text("Core stats: ")],
-                                # [sg.Text(core_stats_text)]
+                                [sg.Text("Core stats: ")],
+                                [sg.Text(core_stats_text)]
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],
@@ -115,12 +122,12 @@ while True:
             talents_tab_layout = [[sg.Text("Talents:")],
                 [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
 
-
+ 
             layout_success = [
                 [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
             ]
 
-            window2 = sg.Window('Character info', layout_success)
+            window2 = sg.Window('Character info - '+character_name, layout_success)
             while True:
                 event2, values2 = window2.read()
                 if event2 == sg.WIN_CLOSED:

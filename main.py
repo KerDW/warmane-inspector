@@ -106,25 +106,25 @@ while True:
             core_stats_text = core_stats_text + "\nSpell Hit Rating: "+third_stats_array[9]
             core_stats_text = core_stats_text + "\nArmor: "+second_stats_array[16]
 
-            main_tab_layout = [[sg.Text("Character: "+character_name)],
+            main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
-                                [sg.Text("Specs: "+spec_text)],
-                                [sg.Text("Profs: "+prof_text)],
-                                [sg.Text("Core stats: ")],
-                                [sg.Text(core_stats_text)]
+                                [sg.Text(core_stats_text), sg.Text("\t\t\t\t"), sg.Text(prof_text)]
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],
                 [sg.Text(stats_text_first_part), sg.Text(stats_text_second_part), sg.Text(stats_text_third_part)]
-                ]
+            ]
 
             talents_tab_layout = [[sg.Text("Talents:")],
                 [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
 
+            raids_tab_layout = [
+                [sg.Text("Raids:")]
+            ]
  
             layout_success = [
-                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
+                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout), sg.Tab('Raids', raids_tab_layout)]])]
             ]
 
             window2 = sg.Window('Character info - '+character_name, layout_success)

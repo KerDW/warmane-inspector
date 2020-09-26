@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 async def screenshotSpecs(name):
-    browser = await launch()
+    browser = await launch(headless=True)
     page = await browser.newPage()
 
     # talent screenshots
@@ -63,6 +63,8 @@ while True:
 
             guild_name = soup.find('span', {'class': 'guild-name'}).text
 
+            level_race_class = soup.find('div', {'class': 'level-race-class'}).text
+
             spec = soup.find_all('div', {'class': 'specialization'})
             spec_text = ""
 
@@ -79,24 +81,36 @@ while True:
                 for tag in tags:
                     prof_text = prof_text + tag.text
 
-            stats = soup.find_all('div', {'class': ['stub', 'stub first']})
-            stats_text = ""
+            stats = soup.find_all('div', {'class': 'character-stats'})
+            core_stats_text = ""
+            stats_text_first_part = ""
+            stats_text_second_part = ""
+            stats_text_third_part = ""
+            i = 0
 
             for tag in stats:
                 tags = tag.find_all("div", {"class": "text"})
                 for tag in tags:
-                    spans = tag.find_all("span", {'class': "value"})
-                    for span in spans:
-                        stats_text = stats_text + span.text
+                    if i == 0:
+                        stats_text_first_part = stats_text_first_part + tag.text
+                    elif i == 1:
+                        stats_text_second_part = stats_text_second_part + tag.text
+                    elif i == 2:
+                        stats_text_third_part = stats_text_third_part + tag.text
+                    i += 1
 
             main_tab_layout = [[sg.Text("Character: "+character_name)],
+                                [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
                                 [sg.Text("Specs: "+spec_text)],
-                                [sg.Text("Profs: "+prof_text)]
+                                [sg.Text("Profs: "+prof_text)],
+                                # [sg.Text("Core stats: ")],
+                                # [sg.Text(core_stats_text)]
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],
-                [sg.Text(stats_text)]]
+                [sg.Text(stats_text_first_part), sg.Text(stats_text_second_part), sg.Text(stats_text_third_part)]
+                ]
 
             talents_tab_layout = [[sg.Text("Talents:")],
                 [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]

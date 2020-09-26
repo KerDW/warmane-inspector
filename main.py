@@ -103,8 +103,18 @@ while True:
             second_stats_array = stats_text_second_part.split()
             third_stats_array = stats_text_third_part.split()
             core_stats_text = "Melee/Ranged Hit Rating: "+first_stats_array[11]+"\nExpertise: "+first_stats_array[26]
-            core_stats_text = core_stats_text + "\nSpell Hit Rating: "+third_stats_array[9]
+            core_stats_text = core_stats_text + "\nSpell Hit Rating: "+third_stats_array[9]+"\nSpell Haste: "+third_stats_array[6]
             core_stats_text = core_stats_text + "\nArmor: "+second_stats_array[16]
+
+            toc_category = {'category': '15021'}
+            toc_data = requests.post(base_url+"statistics", toc_category)
+
+            icc_category = {'category': '15062'}
+            icc_data = requests.post(base_url+"statistics", icc_category)
+
+            soup = BeautifulSoup(toc_data.content, 'html.parser')
+
+            print(soup)
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],

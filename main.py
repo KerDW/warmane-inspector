@@ -141,7 +141,22 @@ while True:
             # togc_25_bosses_completion = 5 - toc_bosses_kills[10:14].count(0)
 
             icc_bosses = [
-                "Lord Marrowgar kills (Icecrown 10 player)", 
+                "Lord Marrowgar kills (Icecrown 10 player)", "Lady Deathwhisper kills (Icecrown 10 player)", "Gunship Battle victories (Icecrown 10 player)",
+                "Deathbringer kills (Icecrown 10 player)", "Rotface kills (Icecrown 10 player)", "Festergut kills (Icecrown 10 player)", "Professor Putricide kills (Icecrown 10 player)",
+                "Blood Prince Council kills (Icecrown 10 player)", "Blood Queen Lana'thel kills (Icecrown 10 player)", "Valithria Dreamwalker rescues (Icecrown 10 player)",
+                "Sindragosa kills (Icecrown 10 player)", "Victories over the Lich King (Icecrown 10 player)",
+                "Lord Marrowgar kills (Icecrown 25 player)", "Lady Deathwhisper kills (Icecrown 25 player)", "Gunship Battle victories (Icecrown 25 player)",
+                "Deathbringer kills (Icecrown 25 player)", "Rotface kills (Icecrown 25 player)", "Festergut kills (Icecrown 25 player)", "Professor Putricide kills (Icecrown 25 player)",
+                "Blood Prince Council kills (Icecrown 25 player)", "Blood Queen Lana'thel kills (Icecrown 25 player)", "Valithria Dreamwalker rescues (Icecrown 25 player)",
+                "Sindragosa kills (Icecrown 25 player)", "Victories over the Lich King (Icecrown 25 player)",
+                "Lord Marrowgar kills (Heroic Icecrown 10 player)", "Lady Deathwhisper kills (Heroic Icecrown 10 player)", "Gunship Battle victories (Heroic Icecrown 10 player)",
+                "Deathbringer kills (Heroic Icecrown 10 player)", "Rotface kills (Heroic Icecrown 10 player)", "Festergut kills (Heroic Icecrown 10 player)", "Professor Putricide kills (Heroic Icecrown 10 player)",
+                "Blood Prince Council kills (Heroic Icecrown 10 player)", "Blood Queen Lana'thel kills (Heroic Icecrown 10 player)", "Valithria Dreamwalker rescues (Heroic Icecrown 10 player)",
+                "Sindragosa kills (Heroic Icecrown 10 player)", "Victories over the Lich King (Heroic Icecrown 10 player)",
+                "Lord Marrowgar kills (Heroic Icecrown 25 player)", "Lady Deathwhisper kills (Heroic Icecrown 25 player)", "Gunship Battle victories (Heroic Icecrown 25 player)",
+                "Deathbringer kills (Heroic Icecrown 25 player)", "Rotface kills (Heroic Icecrown 25 player)", "Festergut kills (Heroic Icecrown 25 player)", "Professor Putricide kills (Heroic Icecrown 25 player)",
+                "Blood Prince Council kills (Heroic Icecrown 25 player)", "Blood Queen Lana'thel kills (Heroic Icecrown 25 player)", "Valithria Dreamwalker rescues (Heroic Icecrown 25 player)",
+                "Sindragosa kills (Heroic Icecrown 25 player)", "Victories over the Lich King (Heroic Icecrown 25 player)"
             ]
             icc_bosses_kills = []
 
@@ -156,9 +171,11 @@ while True:
                     icc_bosses_kills.append(0)
 
             icc_10_bosses_completion = 12 - icc_bosses_kills[0:11].count(0)
-            icc_10_hc_bosses_completion = 12 - icc_bosses_kills[12:23].count(0)
-            icc_25_bosses_completion = 12 - icc_bosses_kills[24:35].count(0)
+            icc_25_bosses_completion = 12 - icc_bosses_kills[12:23].count(0)
+            icc_10_hc_bosses_completion = 12 - icc_bosses_kills[24:35].count(0)
             icc_25_hc_bosses_completion = 12 - icc_bosses_kills[36:47].count(0)
+
+            print(icc_bosses_kills)
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
@@ -167,6 +184,10 @@ while True:
                                 [sg.Text("\nToC 25: " + str(toc_25_bosses_completion) + "/5")],
                                 # [sg.Text("ToGC 10: " + str(togc_10_bosses_completion) + "/5")],
                                 # [sg.Text("ToGC 25: " + str(togc_25_bosses_completion) + "/5")],
+                                [sg.Text("ICC 10: " + str(icc_10_bosses_completion) + "/12")],
+                                [sg.Text("ICC 25: " + str(icc_25_bosses_completion) + "/12")],
+                                [sg.Text("ICC 10 HC: " + str(icc_10_hc_bosses_completion) + "/12")],
+                                [sg.Text("ICC 25 HC: " + str(icc_25_hc_bosses_completion) + "/12")]
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],

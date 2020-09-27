@@ -115,9 +115,16 @@ while True:
             icc_data = requests.post(base_url+"statistics", icc_category)
             icc_data_text = icc_data.text
 
+            # togc info wrong on the database apparently, seems to be just the same as 25 for all difficulties or they just merge
             toc_bosses = ['Victories over the Beasts of Northrend (Trial of the Crusader 25 player)', 'Lord Jaraxxus kills (Trial of the Crusader 25 player)', 
             'Victories over the Faction Champions (Trial of the Crusader 25 player)', "Val'kyr Twins kills (Trial of the Crusader 25 player)", 
-            'Times completed the Trial of the Crusader (25 player)']
+            'Times completed the Trial of the Crusader (25 player)', "Victories over the Beasts of Northrend (Trial of the Grand Crusader 10 player)", 
+            "Lord Jaraxxus kills (Trial of the Grand Crusader 10 player)", "Victories over the Faction Champions (Trial of the Grand Crusader 10 player)", 
+            "Val'kyr Twins kills (Trial of the Grand Crusader 10 player)", "Times completed the Trial of the Grand Crusader (10 player)", 
+            "Victories over the Beasts of Northrend (Trial of the Grand Crusader 25 player)", 
+            "Lord Jaraxxus kills (Trial of the Grand Crusader 25 player)", "Victories over the Faction Champions (Trial of the Grand Crusader 25 player)", 
+            "Val'kyr Twins kills (Trial of the Grand Crusader 25 player)", "Times completed the Trial of the Grand Crusader (25 player)",
+            ]
             toc_bosses_kills = []
 
             # loop over bosses and find the nearest number after it, which will always be the kill count
@@ -129,10 +136,17 @@ while True:
                 except:
                     toc_bosses_kills.append(0)
 
+            toc_25_bosses_completion = 5 - toc_bosses_kills[0:4].count(0)
+            # togc_10_bosses_completion = 5 - toc_bosses_kills[5:9].count(0)
+            # togc_25_bosses_completion = 5 - toc_bosses_kills[10:14].count(0)
+
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
-                                [sg.Text(core_stats_text), sg.Text("\t\t\t\t"), sg.Text(prof_text)]
+                                [sg.Text(core_stats_text), sg.Text("\t\t\t\t"), sg.Text(prof_text)],
+                                [sg.Text("\nToC 25: " + str(toc_25_bosses_completion) + "/5")],
+                                # [sg.Text("ToGC 10: " + str(togc_10_bosses_completion) + "/5")],
+                                # [sg.Text("ToGC 25: " + str(togc_25_bosses_completion) + "/5")],
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],

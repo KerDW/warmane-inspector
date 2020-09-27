@@ -4,6 +4,7 @@ from pyppeteer import launch
 import os
 import requests
 from bs4 import BeautifulSoup
+import re
 
 async def screenshotSpecs(name):
     browser = await launch(headless=True)
@@ -108,13 +109,25 @@ while True:
 
             toc_category = {'category': '15021'}
             toc_data = requests.post(base_url+"statistics", toc_category)
+            toc_data_text = toc_data.text
 
             icc_category = {'category': '15062'}
             icc_data = requests.post(base_url+"statistics", icc_category)
+            icc_data_text = icc_data.text
 
-            soup = BeautifulSoup(toc_data.content, 'html.parser')
+            toc_bosses = ['Victories over the Beasts of Northrend (Trial of the Crusader 25 player)', 'Lord Jaraxxus kills (Trial of the Crusader 25 player)', 
+            'Victories over the Faction Champions (Trial of the Crusader 25 player)', "Val'kyr Twins kills (Trial of the Crusader 25 player)", 
+            'Times completed the Trial of the Crusader (25 player)']
+            toc_bosses_kills = []
 
-            print(soup)
+            # loop over bosses and find the nearest number after it, which will always be the kill count
+            for boss in toc_bosses:
+                boss_pos = toc_data_text.find(boss)
+                boss_kills_pos = toc_data_text.find('">', boss_pos)
+                try:
+                    toc_bosses_kills.append(re.search('\d+', toc_data_text[boss_kills_pos:boss_kills_pos+7]).group(0))
+                except:
+                    toc_bosses_kills.append(0)
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],

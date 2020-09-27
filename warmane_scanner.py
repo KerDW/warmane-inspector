@@ -18,23 +18,29 @@ async def screenshotSpecs(name):
         # focus page to avoid tooltips
         await page.bringToFront()
 
-        # change spec through js click (if currently in OS it'll error)
-        await page.click('#character-sheet > table > tbody > tr > td:nth-child(1) > a')
-        await page.mouse.move(0, 0)
+        try:
+            # change spec through js click (if currently in OS it'll error)
+            await page.click('#character-sheet > table > tbody > tr > td:nth-child(1) > a')
+            await page.mouse.move(0, 0)
 
-        # get mainspec and save screenshot
-        await page.waitForSelector('#spec-0')
-        element = await page.querySelector('#spec-0')  
-        await element.screenshot({'path': 'talents0.png'})
+            # get mainspec and save screenshot
+            await page.waitForSelector('#spec-0')
+            element = await page.querySelector('#spec-0')  
+            await element.screenshot({'path': 'talents0.png'})
 
-        # change spec through js click
-        await page.click('#character-sheet > table > tbody > tr > td:nth-child(3) > a')
-        await page.mouse.move(0, 0)
+            # change spec through js click
+            await page.click('#character-sheet > table > tbody > tr > td:nth-child(3) > a')
+            await page.mouse.move(0, 0)
 
-        # screenshot offspec
-        await page.waitForSelector('#spec-1')
-        element = await page.querySelector('#spec-1')
-        await element.screenshot({'path': 'talents1.png'})
+            # screenshot offspec
+            await page.waitForSelector('#spec-1')
+            element = await page.querySelector('#spec-1')
+            await element.screenshot({'path': 'talents1.png'})
+
+        except:
+            await page.waitForSelector('#spec-0')
+            element = await page.querySelector('#spec-0')  
+            await element.screenshot({'path': 'talents0.png'})
 
         return 1
     except:
@@ -192,8 +198,16 @@ while True:
                 [sg.Text(stats_text_first_part), sg.Text(stats_text_second_part), sg.Text(stats_text_third_part)]
             ]
 
+            talents = []
+
+            if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
+                talents = [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+            else:
+                talents = [sg.Image(os.getcwd()+'\\'+'talents0.png')]
+
             talents_tab_layout = [[sg.Text("Talents:")],
-                [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
+                                    talents
+                                ]
 
             # raids_tab_layout = [
                 
@@ -210,6 +224,9 @@ while True:
                     break
 
             window2.close()
+            os.remove('talents0.png')
+            if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
+                os.remove('talents1.png')
 
         else:
 
@@ -227,6 +244,3 @@ while True:
             window3.close()
         
 window.close()
-
-os.remove('talents0.png')
-os.remove('talents1.png')

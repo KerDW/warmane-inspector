@@ -142,9 +142,9 @@ while True:
                 except:
                     toc_bosses_kills.append(0)
 
-            toc_25_bosses_completion = 5 - toc_bosses_kills[0:4].count(0)
-            # togc_10_bosses_completion = 5 - toc_bosses_kills[5:9].count(0)
-            # togc_25_bosses_completion = 5 - toc_bosses_kills[10:14].count(0)
+            toc_25_bosses_completion = 5 - toc_bosses_kills[0:5].count(0)
+            # togc_10_bosses_completion = 5 - toc_bosses_kills[5:10].count(0)
+            # togc_25_bosses_completion = 5 - toc_bosses_kills[10:15].count(0)
 
             icc_bosses = [
                 "Lord Marrowgar kills (Icecrown 10 player)", "Lady Deathwhisper kills (Icecrown 10 player)", "Gunship Battle victories (Icecrown 10 player)",

@@ -170,12 +170,10 @@ while True:
                 except:
                     icc_bosses_kills.append(0)
 
-            icc_10_bosses_completion = 12 - icc_bosses_kills[0:11].count(0)
-            icc_25_bosses_completion = 12 - icc_bosses_kills[12:23].count(0)
-            icc_10_hc_bosses_completion = 12 - icc_bosses_kills[24:35].count(0)
-            icc_25_hc_bosses_completion = 12 - icc_bosses_kills[36:47].count(0)
-
-            print(icc_bosses_kills)
+            icc_10_bosses_completion = 12 - icc_bosses_kills[0:12].count(0)
+            icc_25_bosses_completion = 12 - icc_bosses_kills[12:24].count(0)
+            icc_10_hc_bosses_completion = 12 - icc_bosses_kills[24:36].count(0)
+            icc_25_hc_bosses_completion = 12 - icc_bosses_kills[36:48].count(0)
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],

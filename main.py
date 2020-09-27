@@ -115,7 +115,7 @@ while True:
             icc_data = requests.post(base_url+"statistics", icc_category)
             icc_data_text = icc_data.text
 
-            # togc info wrong on the database apparently, seems to be just the same as 25 for all difficulties or they just merge
+            # togc info wrong on the database apparently, killing on any difficulty counts for all of them
             toc_bosses = ['Victories over the Beasts of Northrend (Trial of the Crusader 25 player)', 'Lord Jaraxxus kills (Trial of the Crusader 25 player)', 
             'Victories over the Faction Champions (Trial of the Crusader 25 player)', "Val'kyr Twins kills (Trial of the Crusader 25 player)", 
             'Times completed the Trial of the Crusader (25 player)', "Victories over the Beasts of Northrend (Trial of the Grand Crusader 10 player)", 
@@ -139,6 +139,26 @@ while True:
             toc_25_bosses_completion = 5 - toc_bosses_kills[0:4].count(0)
             # togc_10_bosses_completion = 5 - toc_bosses_kills[5:9].count(0)
             # togc_25_bosses_completion = 5 - toc_bosses_kills[10:14].count(0)
+
+            icc_bosses = [
+                "Lord Marrowgar kills (Icecrown 10 player)", 
+            ]
+            icc_bosses_kills = []
+
+            # loop over bosses and find the nearest number after it, which will always be the kill count
+            for boss in icc_bosses:
+                boss_pos = icc_data_text.find(boss)
+                boss_kills_pos = icc_data_text.find('">', boss_pos)
+                # data has - - to represent 0 so if no number found it's 0
+                try:
+                    icc_bosses_kills.append(re.search('\d+', icc_data_text[boss_kills_pos:boss_kills_pos+7]).group(0))
+                except:
+                    icc_bosses_kills.append(0)
+
+            icc_10_bosses_completion = 12 - icc_bosses_kills[0:11].count(0)
+            icc_10_hc_bosses_completion = 12 - icc_bosses_kills[12:23].count(0)
+            icc_25_bosses_completion = 12 - icc_bosses_kills[24:35].count(0)
+            icc_25_hc_bosses_completion = 12 - icc_bosses_kills[36:47].count(0)
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],

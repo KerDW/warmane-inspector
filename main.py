@@ -195,12 +195,12 @@ while True:
             talents_tab_layout = [[sg.Text("Talents:")],
                 [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]]
 
-            raids_tab_layout = [
-                [sg.Text("Raids:")]
-            ]
+            # raids_tab_layout = [
+                
+            # ]
  
             layout_success = [
-                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout), sg.Tab('Raids', raids_tab_layout)]])]
+                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
             ]
 
             window2 = sg.Window('Character info - '+character_name, layout_success)
@@ -227,3 +227,6 @@ while True:
             window3.close()
         
 window.close()
+
+os.remove('talents0.png')
+os.remove('talents1.png')

@@ -1,4 +1,0 @@
-screenshot talents
-see boss kill count
-see character stats (melee and ranged hit, expertise, sp, ap, haste, crit,...)
-see professions

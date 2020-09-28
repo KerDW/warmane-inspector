@@ -191,6 +191,20 @@ while True:
             icc_10_hc_bosses_completion = 12 - icc_bosses_kills[24:36].count(0)
             icc_25_hc_bosses_completion = 12 - icc_bosses_kills[36:48].count(0)
 
+            rs_achievements_10 = {'category': '14922'}
+            rs_10_data = requests.post(base_url+"achievements", rs_achievements_10).json()['content']
+            soup = BeautifulSoup(rs_10_data, 'html.parser')
+
+            rs_10_completed = 1 if soup.find("div", {"id": "ach4817", "class": "achievement locked"}) is None else 0
+            rs_10_hc_completed = 1 if soup.find("div", {"id": "ach4818", "class": "achievement locked"}) is None else 0
+
+            rs_achievements_25 = {'category': '14923'}
+            rs_25_data = requests.post(base_url+"achievements", rs_achievements_25).json()['content']
+            soup = BeautifulSoup(rs_25_data, 'html.parser')
+
+            rs_25_completed = 1 if soup.find("div", {"id": "ach4815", "class": "achievement locked"}) is None else 0
+            rs_25_hc_completed = 1 if soup.find("div", {"id": "ach4816", "class": "achievement locked"}) is None else 0
+
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
@@ -198,10 +212,10 @@ while True:
                                 [sg.Text("\nToC 25: " + str(toc_25_bosses_completion) + "/5")],
                                 # [sg.Text("ToGC 10: " + str(togc_10_bosses_completion) + "/5")],
                                 # [sg.Text("ToGC 25: " + str(togc_25_bosses_completion) + "/5")],
-                                [sg.Text("ICC 10: " + str(icc_10_bosses_completion) + "/12")],
-                                [sg.Text("ICC 25: " + str(icc_25_bosses_completion) + "/12")],
-                                [sg.Text("ICC 10 HC: " + str(icc_10_hc_bosses_completion) + "/12")],
-                                [sg.Text("ICC 25 HC: " + str(icc_25_hc_bosses_completion) + "/12")]
+                                [sg.Text("ICC 10: " + str(icc_10_bosses_completion) + "/12"), sg.Text("\t\t\t       RS 10: " + str(rs_10_completed) + "/1")],
+                                [sg.Text("ICC 25: " + str(icc_25_bosses_completion) + "/12"), sg.Text("\t\t\t      RS 25: " + str(rs_25_completed) + "/1")],
+                                [sg.Text("ICC 10 HC: " + str(icc_10_hc_bosses_completion) + "/12"), sg.Text("\t\t\tRS 10 HC: " + str(rs_10_hc_completed) + "/1")],
+                                [sg.Text("ICC 25 HC: " + str(icc_25_hc_bosses_completion) + "/12"), sg.Text("\t\t\tRS 25 HC: " + str(rs_25_hc_completed) + "/1")],
                                 ]
 
             stats_tab_layout = [[sg.Text("Stats:")],

@@ -51,7 +51,7 @@ async def screenshotSpecs(name, realm):
     return 1
 
 base_layout = [  
-    [sg.Combo(['Lordaeron', 'Frostmourne', 'Icecrown', "Blackrock"], default_value="Lordaeron", enable_events=True, key='combo'), sg.Text('Character:'), sg.InputText(), sg.Button('Inspect', bind_return_key=True)]
+    [sg.Combo(['Lordaeron', 'Frostmourne', 'Icecrown', "Blackrock"], default_value="Lordaeron", enable_events=True, key='combo'), sg.Text('Character:'), sg.InputText(), sg.Checkbox('Talents img', enable_events=True, key='talents'), sg.Button('Inspect', bind_return_key=True)]
 ]
 
 window = sg.Window('Warmane inspector', base_layout)
@@ -64,13 +64,19 @@ while True:
 
         character_name = values[0].capitalize()
         realm = values['combo']
+        talents_cb = values['talents']
+        base_url = 'https://armory.warmane.com/character/'+character_name+'/'+realm+'/'
 
-        if asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name, realm)) == True:
+        html_page = requests.get(base_url+"profile")
+        soup = BeautifulSoup(html_page.content, 'html.parser')
 
-            base_url = 'https://armory.warmane.com/character/'+character_name+'/'+realm+'/'
+        # check if name is there and therefore we got a profile
+        name = soup.find('span', {'class': 'name'})
 
-            html_page = requests.get(base_url+"profile")
-            soup = BeautifulSoup(html_page.content, 'html.parser')
+        if name is not None:
+
+            if talents_cb is True:
+                asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name, realm))
 
             guild_name = soup.find('span', {'class': 'guild-name'}).text
 
@@ -202,35 +208,44 @@ while True:
                 [sg.Text(stats_text_first_part), sg.Text(stats_text_second_part), sg.Text(stats_text_third_part)]
             ]
 
-            talents = []
+            if talents_cb:
+                talents = []
 
-            if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
-                talents = [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
-            else:
-                talents = [sg.Image(os.getcwd()+'\\'+'talents0.png')]
+                if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
+                    talents = [sg.Image(os.getcwd()+'\\'+'talents0.png'), sg.Image(os.getcwd()+'\\'+'talents1.png')]
+                else:
+                    talents = [sg.Image(os.getcwd()+'\\'+'talents0.png')]
 
-            talents_tab_layout = [[sg.Text("Talents:")],
-                                    talents
-                                ]
+                talents_tab_layout = [[sg.Text("Talents:")],
+                                        talents
+                                    ]
 
             # raids_tab_layout = [
                 
             # ]
  
-            layout_success = [
-                [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
-            ]
+            if talents_cb:
+                layout_success = [
+                    [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout), sg.Tab('Talents', talents_tab_layout)]])]
+                ]
+            else:
+                layout_success = [
+                    [sg.TabGroup([[sg.Tab('Main', main_tab_layout), sg.Tab('Stats', stats_tab_layout)]])]
+                ]
 
             window2 = sg.Window('Character info - '+character_name, layout_success)
+
             while True:
                 event2, values2 = window2.read()
                 if event2 == sg.WIN_CLOSED:
                     break
 
             window2.close()
-            os.remove('talents0.png')
-            if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
-                os.remove('talents1.png')
+
+            if talents_cb:
+                os.remove('talents0.png')
+                if os.path.exists(os.getcwd()+'\\'+'talents1.png'):
+                    os.remove('talents1.png')
 
         else:
 

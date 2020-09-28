@@ -6,12 +6,12 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-async def screenshotSpecs(name):
+async def screenshotSpecs(name, realm):
     browser = await launch(headless=True)
     page = await browser.newPage()
 
     # talent screenshots
-    base_url = 'https://armory.warmane.com/character/'+name+'/Lordaeron/'
+    base_url = 'https://armory.warmane.com/character/'+name+'/'+realm+'/'
 
     await page.goto(base_url+'talents')
     # focus page to avoid tooltips
@@ -51,7 +51,7 @@ async def screenshotSpecs(name):
     return 1
 
 base_layout = [  
-    [sg.Text('Character:'), sg.InputText(), sg.Button('Inspect', bind_return_key=True)]
+    [sg.Combo(['Lordaeron', 'Frostmourne', 'Icecrown', "Blackrock"], default_value="Lordaeron", enable_events=True, key='combo'), sg.Text('Character:'), sg.InputText(), sg.Button('Inspect', bind_return_key=True)]
 ]
 
 window = sg.Window('Warmane inspector', base_layout)
@@ -63,10 +63,11 @@ while True:
     if event == "Inspect":
 
         character_name = values[0].capitalize()
+        realm = values['combo']
 
-        if asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name)) == True:
+        if asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name, realm)) == True:
 
-            base_url = 'https://armory.warmane.com/character/'+character_name+'/Lordaeron/'
+            base_url = 'https://armory.warmane.com/character/'+character_name+'/'+realm+'/'
 
             html_page = requests.get(base_url+"profile")
             soup = BeautifulSoup(html_page.content, 'html.parser')

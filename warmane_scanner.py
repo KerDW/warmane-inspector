@@ -75,20 +75,18 @@ while True:
 
         if name is not None:
 
+            # TALENT SCREENSHOTS
+
             if talents_cb is True:
                 asyncio.get_event_loop().run_until_complete(screenshotSpecs(character_name, realm))
+
+            # GUILD LEVEL RACE CLASS
 
             guild_name = soup.find('span', {'class': 'guild-name'}).text
 
             level_race_class = soup.find('div', {'class': 'level-race-class'}).text
 
-            spec = soup.find_all('div', {'class': 'specialization'})
-            spec_text = ""
-
-            for tag in spec:
-                tags = tag.find_all("div", {"class": "text"})
-                for tag in tags:
-                    spec_text = spec_text + tag.text
+            # PROFS
 
             prof = soup.find_all('div', {'class': 'profskills'})
             prof_text = ""
@@ -97,6 +95,8 @@ while True:
                 tags = tag.find_all("div", {"class": "text"})
                 for tag in tags:
                     prof_text = prof_text + tag.text
+
+            # CORE STATS
 
             stats = soup.find_all('div', {'class': 'character-stats'})
             core_stats_text = ""
@@ -122,6 +122,40 @@ while True:
             core_stats_text = "Melee/Ranged Hit Rating: "+first_stats_array[11]+"\nExpertise: "+first_stats_array[26]
             core_stats_text = core_stats_text + "\nSpell Hit Rating: "+third_stats_array[9]+"\nSpell Haste: "+third_stats_array[6]
             core_stats_text = core_stats_text + "\nArmor: "+second_stats_array[16]
+
+            # SPECS
+
+            spec = soup.find_all('div', {'class': 'specialization'})
+            spec_text = ""
+
+            for tag in spec:
+                tags = tag.find_all("div", {"class": "text"})
+                for tag in tags:
+                    spec_text = spec_text + tag.text
+
+            # GLYPHS
+
+            html_page = requests.get(base_url+"talents")
+            soup = BeautifulSoup(html_page.content, 'html.parser')
+            mainspec_glyphs = ""
+            offspec_glyphs = ""
+
+            glyphs = soup.find_all("div", {"class": "character-glyphs"})
+
+            for glyph in glyphs:
+                print(glyph)
+                ms_glyphs = glyph.find_all("div", {"data-glyphs": "0"})
+                for ms_glyph in ms_glyphs:
+                    glyph_text = ms_glyph.find_all("a")
+                    for gt in glyph_text:
+                        mainspec_glyphs = mainspec_glyphs + gt.text
+                os_glyphs = glyph.find_all("div", {"data-glyphs": "1"})
+                for os_glyph in os_glyphs:
+                    glyph_text = ms_glyph.find_all("a")
+                    for gt in glyph_text:
+                        offspec_glyphs = offspec_glyphs + gt.text
+
+            # ACHIEVEMENTS
 
             toc_category = {'category': '15021'}
             toc_data = requests.post(base_url+"statistics", toc_category)

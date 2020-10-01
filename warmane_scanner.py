@@ -137,8 +137,8 @@ while True:
 
             html_page = requests.get(base_url+"talents")
             soup = BeautifulSoup(html_page.content, 'html.parser')
-            mainspec_glyphs = ""
-            offspec_glyphs = ""
+            mainspec_glyphs = "MS:\n"
+            offspec_glyphs = "\nOS:\n"
 
             glyphs = soup.find_all("div", {"class": "character-glyphs"})
 
@@ -153,6 +153,9 @@ while True:
                     glyph_text_os = os_glyph.find_all("a")
                     for gtos in glyph_text_os:
                         offspec_glyphs = offspec_glyphs + gtos.text + "\n"
+
+            if offspec_glyphs == "\nOS:\n":
+                offspec_glyphs = ""
 
             # ACHIEVEMENTS
 
@@ -238,11 +241,10 @@ while True:
             rs_25_completed = 1 if soup.find("div", {"id": "ach4815", "class": "achievement locked"}) is None else 0
             rs_25_hc_completed = 1 if soup.find("div", {"id": "ach4816", "class": "achievement locked"}) is None else 0
 
-            glyphs = mainspec_glyphs + offspec_glyphs
-
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
                                 [sg.Text("Guild: "+guild_name)],
+                                [sg.Text("\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t"), sg.Text(mainspec_glyphs + offspec_glyphs)],
                                 [sg.Text(core_stats_text), sg.Text("\t\t\t\t"), sg.Text(prof_text)],
                                 [sg.Text("\nToC 25: " + str(toc_25_bosses_completion) + "/5")],
                                 # [sg.Text("ToGC 10: " + str(togc_10_bosses_completion) + "/5")],

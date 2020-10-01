@@ -143,17 +143,16 @@ while True:
             glyphs = soup.find_all("div", {"class": "character-glyphs"})
 
             for glyph in glyphs:
-                print(glyph)
                 ms_glyphs = glyph.find_all("div", {"data-glyphs": "0"})
                 for ms_glyph in ms_glyphs:
-                    glyph_text = ms_glyph.find_all("a")
-                    for gt in glyph_text:
-                        mainspec_glyphs = mainspec_glyphs + gt.text
+                    glyph_text_ms = ms_glyph.find_all("a")
+                    for gtms in glyph_text_ms:
+                        mainspec_glyphs = mainspec_glyphs + gtms.text + "\n"
                 os_glyphs = glyph.find_all("div", {"data-glyphs": "1"})
                 for os_glyph in os_glyphs:
-                    glyph_text = ms_glyph.find_all("a")
-                    for gt in glyph_text:
-                        offspec_glyphs = offspec_glyphs + gt.text
+                    glyph_text_os = os_glyph.find_all("a")
+                    for gtos in glyph_text_os:
+                        offspec_glyphs = offspec_glyphs + gtos.text + "\n"
 
             # ACHIEVEMENTS
 
@@ -238,6 +237,8 @@ while True:
 
             rs_25_completed = 1 if soup.find("div", {"id": "ach4815", "class": "achievement locked"}) is None else 0
             rs_25_hc_completed = 1 if soup.find("div", {"id": "ach4816", "class": "achievement locked"}) is None else 0
+
+            glyphs = mainspec_glyphs + offspec_glyphs
 
             main_tab_layout = [[sg.Text("Character: "+character_name), sg.Text("\t\t\t\t\t"), sg.Text(spec_text)],
                                 [sg.Text(level_race_class)],
